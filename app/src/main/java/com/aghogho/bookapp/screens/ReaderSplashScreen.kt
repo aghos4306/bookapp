@@ -1,4 +1,6 @@
 package com.aghogho.bookapp.screens
 
-class ReaderSplashScreen {
+import androidx.navigation.NavController
+
+class ReaderSplashScreen(navController: NavController) {
 }
