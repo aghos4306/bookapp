@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.aghogho.bookapp.components.ReaderLogo
 import com.aghogho.bookapp.navigation.ReaderScreens
 import kotlinx.coroutines.delay
 
@@ -60,11 +61,7 @@ fun ReaderSplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Reading",
-                style = MaterialTheme.typography.h3,
-                color = Color.Red.copy(alpha = 0.5f)
-            )
+            ReaderLogo()
             Spacer(modifier = Modifier.height(15.dp))
             Text(
                 text = "\"Read. Change. Insight\"",
@@ -74,3 +71,4 @@ fun ReaderSplashScreen(navController: NavController) {
         }
     }
 }
+
