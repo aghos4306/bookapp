@@ -1,6 +1,12 @@
 package com.aghogho.bookapp.screens
 
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
-class ReaderSplashScreen(navController: NavController) {
+@Composable
+fun ReaderSplashScreen(navController: NavController) {
+    Text(
+        text = "Splash Screen"
+    )
 }
