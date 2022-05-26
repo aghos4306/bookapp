@@ -41,7 +41,10 @@ import com.aghogho.bookapp.components.ReaderLogo
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
     
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
     
@@ -58,6 +61,7 @@ fun LoginScreen(navController: NavController) {
                 UserForm(loading = false, isCreateAccount = false) {email, password ->
                     //Log.d("Form", "ReaderLoginScreen: $email $password")
                     //Todo: Login to Firebase
+                    viewModel.signInWithEmailAndPassword(email = email, password = password)
                 }
             } else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->

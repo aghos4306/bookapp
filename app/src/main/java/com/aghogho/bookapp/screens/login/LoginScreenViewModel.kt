@@ -24,6 +24,7 @@ class LoginScreenViewModel: ViewModel() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        Log.d("FirebaseSignIn", "signInWithEmailAndPassword: Good Job ${task.result.toString()}")
                         //Todo: Take User to Home Screen
                     } else {
                         Log.d("Firebase", "signInWithEmailAndPassword: ${task.result.toString()}")
