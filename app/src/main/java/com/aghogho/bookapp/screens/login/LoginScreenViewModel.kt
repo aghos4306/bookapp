@@ -19,13 +19,14 @@ class LoginScreenViewModel: ViewModel() {
     val loading: LiveData<Boolean> = _loading
 
 
-    fun signInWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
+    fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) = viewModelScope.launch {
         try {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("FirebaseSignIn", "signInWithEmailAndPassword: Good Job ${task.result.toString()}")
                         //Todo: Take User to Home Screen
+                        home()
                     } else {
                         Log.d("Firebase", "signInWithEmailAndPassword: ${task.result.toString()}")
                     }

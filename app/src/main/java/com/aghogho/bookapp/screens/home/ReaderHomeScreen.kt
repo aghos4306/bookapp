@@ -1,9 +1,10 @@
 package com.aghogho.bookapp.screens.home
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
 fun HomeScreen(navController: NavController) {
-
+    Text(text = "Welcome to Home Screen")
 }

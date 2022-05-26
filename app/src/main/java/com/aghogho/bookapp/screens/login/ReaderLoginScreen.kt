@@ -38,6 +38,7 @@ import com.aghogho.bookapp.R
 import com.aghogho.bookapp.components.EmailInput
 import com.aghogho.bookapp.components.PasswordInput
 import com.aghogho.bookapp.components.ReaderLogo
+import com.aghogho.bookapp.navigation.ReaderScreens
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -61,7 +62,9 @@ fun LoginScreen(
                 UserForm(loading = false, isCreateAccount = false) {email, password ->
                     //Log.d("Form", "ReaderLoginScreen: $email $password")
                     //Todo: Login to Firebase
-                    viewModel.signInWithEmailAndPassword(email = email, password = password)
+                    viewModel.signInWithEmailAndPassword(email = email, password = password) {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
                 }
             } else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->
