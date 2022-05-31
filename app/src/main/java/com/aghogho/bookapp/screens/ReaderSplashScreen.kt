@@ -42,12 +42,12 @@ fun ReaderSplashScreen(navController: NavController) {
         )
         delay(2000L)
         //Check if there is a firebase authenticated user, if so take them to HomeScreen, otherwise to LoginScreen
-//        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
-//            navController.navigate(ReaderScreens.LoginScreen.name)
-//        } else {
-//            navController.navigate(ReaderScreens.ReaderHomeScreen.name)
-//        }
-        navController.navigate(ReaderScreens.LoginScreen.name)
+        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
+            navController.navigate(ReaderScreens.LoginScreen.name)
+        } else {
+            navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+        }
+       // navController.navigate(ReaderScreens.LoginScreen.name)
     }
 
     Surface(
