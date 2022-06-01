@@ -143,7 +143,7 @@ fun ListBookCard(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = rememberImagePainter(data = ""),
+                    painter = rememberImagePainter(data = "http://books.google.com/books/content?id=5BGBswAQSiEC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"),
                     contentDescription = "Book Photo",
                     modifier = Modifier
                         .height(140.dp)
