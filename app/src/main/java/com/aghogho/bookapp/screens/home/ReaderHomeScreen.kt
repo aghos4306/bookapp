@@ -1,5 +1,6 @@
 package com.aghogho.bookapp.screens.home
 
+import android.telecom.Call
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.R
+import com.aghogho.bookapp.components.FABContent
+import com.aghogho.bookapp.components.ReaderAppBar
+import com.aghogho.bookapp.components.TitleSection
 import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
 import com.google.firebase.auth.FirebaseAuth
@@ -51,93 +57,11 @@ fun HomeScreen(navController: NavController = NavController(LocalContext.current
 }
 
 @Composable
-fun ReaderAppBar(
-    title: String,
-    showProfile: Boolean = true,
-    navController: NavController
-) {
-    TopAppBar(
-        title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (showProfile) {
-                        //Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "")
-                        Icon(
-                            imageVector = Icons.Default.Book,
-                            contentDescription = "Logo Icon",
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .scale(0.9f)
-                        )
-                    }
-                    Text(
-                        text = title,
-                        color = Color.Red.copy(alpha = 0.7f),
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    )
-                    Spacer(modifier = Modifier.width(150.dp))
-                }
-        },
-        actions = {
-                  IconButton(onClick = {
-                      FirebaseAuth.getInstance().signOut().run {
-                          navController.navigate(ReaderScreens.LoginScreen.name)
-                      }
-                  }) {
-                      Icon(
-                          imageVector = Icons.Default.Logout,
-                          contentDescription = "Logout Icon",
-                          //tint = Color.Green.copy(alpha = 0.4f)
-                      )
-                  }
-        },
-        backgroundColor = Color.Transparent,
-        elevation = 0.dp
-    )
-}
-
-@Composable
-fun FABContent(onTap: () -> Unit) {
-    FloatingActionButton(
-        onClick = { onTap() },
-        shape = RoundedCornerShape(50.dp),
-        backgroundColor = Color(0xFF92CBDF)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Add a Book",
-            tint = Color.White
-        )
-    }
-}
-
-@Composable
 fun ReadingRightNowArea(
     books: List<MBook>,
     navController: NavController
 ) {
 
-}
-
-@Composable
-fun TitleSection(
-    modifier: Modifier = Modifier,
-    label: String
-) {
-    Surface(
-        modifier = Modifier
-            .padding(start = 5.dp, top = 1.dp)
-    ) {
-        Column {
-            Text(
-                text = label,
-                fontSize = 19.sp,
-                fontStyle = FontStyle.Normal,
-                textAlign = TextAlign.Left
-            )
-        }
-    }
 }
 
 @Composable
@@ -152,7 +76,7 @@ fun HomeContent(
     }
     Column(
         Modifier.padding(2.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.Top
     ) {
         Row(
             modifier = Modifier
@@ -182,6 +106,101 @@ fun HomeContent(
                 )
                 Divider()
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ListBookCard(
+    book: MBook = MBook("ytk", "Designated Match", "Cloe Phoebe", "interest"),
+    onPressDetails: (String) -> Unit = {}
+) {
+    val context = LocalContext.current
+    val resources = context.resources
+    val displayMetrics = resources.displayMetrics
+    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
+    val spacing = 10.dp
+    Card(
+        shape = RoundedCornerShape(29.dp),
+        backgroundColor = Color.White,
+        elevation = 6.dp,
+        modifier = Modifier
+            .padding(16.dp)
+            .height(242.dp)
+            .width(202.dp)
+            .clickable {
+                onPressDetails.invoke(book.title.toString())
+            }
+    ) {
+        Column(
+            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+            horizontalAlignment = Alignment.Start
+        ) {
+            //Book Image and Book Rating Section
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = rememberImagePainter(data = ""),
+                    contentDescription = "Book Photo",
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(100.dp)
+                        .padding(4.dp)
+                )
+                Spacer(modifier = Modifier.width(50.dp))
+
+                Column(
+                    modifier = Modifier.padding(top = 25.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 1.dp)
+                    )
+                    BookRating(score = 3.6)
+                }
+            }
+            //Book Title and Author Section
+            Text(
+                text = "Book Title",
+                modifier = Modifier.padding(4.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "Author: Author Names...",
+                modifier = Modifier.padding(4.dp),
+                style = MaterialTheme.typography.caption
+            )
+        }
+    }
+}
+
+@Composable
+fun BookRating(score: Double = 4.5) {
+    Surface(
+        modifier = Modifier
+            .height(70.dp)
+            .padding(4.dp),
+        shape = RoundedCornerShape(56.dp),
+        elevation = 6.dp,
+        color = Color.White
+    ) {
+        Column(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                imageVector = Icons.Filled.StarBorder,
+                contentDescription = "Rating Icon",
+                modifier = Modifier.padding(3.dp)
+            )
+            Text(
+                text = score.toString(),
+                style = MaterialTheme.typography.subtitle1
+            )
         }
     }
 }
