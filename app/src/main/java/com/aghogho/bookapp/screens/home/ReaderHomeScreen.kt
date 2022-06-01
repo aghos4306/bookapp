@@ -1,9 +1,12 @@
 package com.aghogho.bookapp.screens.home
 
 import android.telecom.Call
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -28,9 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.R
-import com.aghogho.bookapp.components.FABContent
-import com.aghogho.bookapp.components.ReaderAppBar
-import com.aghogho.bookapp.components.TitleSection
+import com.aghogho.bookapp.components.*
 import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
 import com.google.firebase.auth.FirebaseAuth
@@ -61,13 +62,20 @@ fun ReadingRightNowArea(
     books: List<MBook>,
     navController: NavController
 ) {
-
+    ListBookCard()
 }
 
 @Composable
 fun HomeContent(
     navController: NavController
 ) {
+    val listOfBooks = listOf(
+        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
+        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
+        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
+        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
+        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
+    )
     val email = FirebaseAuth.getInstance().currentUser?.email
     val currentUserName = if (!email.isNullOrEmpty()) {
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0)
@@ -107,146 +115,55 @@ fun HomeContent(
                 Divider()
             }
         }
-        ListBookCard()
+        //ListBookCard()
+        ReadingRightNowArea(
+            books = listOf(),
+            navController = navController
+        )
+        TitleSection(label = "Reading List")
+
+        BookListArea(
+            listOfBooks = listOfBooks,
+            navController = navController
+        )
     }
 }
 
-@Preview
 @Composable
-fun ListBookCard(
-    book: MBook = MBook("ytk", "Designated Match", "Cloe Phoebe", "interest"),
-    onPressDetails: (String) -> Unit = {}
+fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
+    HorizontalScrollableComponent(listOfBooks) {
+        Log.d("TAG", "BookListArea: $it")
+        //Todo: Navigate to Book Details when Card is clicked.
+    }
+}
+
+@Composable
+fun HorizontalScrollableComponent(
+    listOfBooks: List<MBook>,
+    onCardPressed: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    val resources = context.resources
-    val displayMetrics = resources.displayMetrics
-    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
-    val spacing = 10.dp
-    Card(
-        shape = RoundedCornerShape(29.dp),
-        backgroundColor = Color.White,
-        elevation = 6.dp,
+    val scrollState = rememberScrollState()
+    Row(
         modifier = Modifier
-            .padding(16.dp)
-            .height(242.dp)
-            .width(202.dp)
-            .clickable {
-                onPressDetails.invoke(book.title.toString())
-            }
+            .fillMaxWidth()
+            .height(280.dp)
+            .horizontalScroll(scrollState)
     ) {
-        Column(
-            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
-            horizontalAlignment = Alignment.Start
-        ) {
-            //Book Image and Book Rating Section
-            Row(
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = rememberImagePainter(data = "http://books.google.com/books/content?id=5BGBswAQSiEC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"),
-                    contentDescription = "Book Photo",
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(100.dp)
-                        .padding(4.dp)
-                )
-                Spacer(modifier = Modifier.width(50.dp))
-
-                Column(
-                    modifier = Modifier.padding(top = 25.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Fav Icon",
-                        modifier = Modifier.padding(bottom = 1.dp)
-                    )
-                    BookRating(score = 3.6)
-                }
+        for (book in listOfBooks) {
+            ListBookCard(book) {
+                onCardPressed(it)
             }
-            //Book Title and Author Section
-            Text(
-                text = "Book Title",
-                modifier = Modifier.padding(4.dp),
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "Author: Author Names...",
-                modifier = Modifier.padding(4.dp),
-                style = MaterialTheme.typography.caption
-            )
-
-        }
-        //Rounded Button on Card
-        Row(
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            RounderButtonOnCardRightBottom(label = "Reading", radius = 70)
-        }
-
-    }
-}
-
-@Composable
-fun BookRating(score: Double = 4.5) {
-    Surface(
-        modifier = Modifier
-            .height(70.dp)
-            .padding(4.dp),
-        shape = RoundedCornerShape(56.dp),
-        elevation = 6.dp,
-        color = Color.White
-    ) {
-        Column(modifier = Modifier.padding(4.dp)) {
-            Icon(
-                imageVector = Icons.Filled.StarBorder,
-                contentDescription = "Rating Icon",
-                modifier = Modifier.padding(3.dp)
-            )
-            Text(
-                text = score.toString(),
-                style = MaterialTheme.typography.subtitle1
-            )
         }
     }
 }
 
-@Preview
-@Composable
-fun RounderButtonOnCardRightBottom(
-    label: String = "Read",
-    radius: Int = 29,
-    onPress: () -> Unit = {}
-) {
-   Surface(
-       modifier = Modifier
-           .clip(RoundedCornerShape(
-               bottomEndPercent = radius,
-               topStartPercent = radius
-           )),
-       color = Color(0xFF92CBDF)
-   ) {
-       Column(
-           modifier = Modifier
-               .width(90.dp)
-               .heightIn(40.dp)
-               .clickable {
-                   onPress.invoke()
-               },
-           verticalArrangement = Arrangement.Center,
-           horizontalAlignment = Alignment.CenterHorizontally
-       ) {
-          Text(
-              text = label,
-              style = TextStyle(color = Color.White, fontSize = 15.sp)
-          )
-       }
-   }
-}
+
+
+
+
+
+
+
 
 
 
