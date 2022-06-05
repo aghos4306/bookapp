@@ -1,6 +1,7 @@
 package com.aghogho.bookapp.di
 
 import com.aghogho.bookapp.network.BooksApi
+import com.aghogho.bookapp.repository.BookRepository
 import com.aghogho.bookapp.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -23,5 +24,9 @@ object AppModule {
             .build()
             .create(BooksApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(api: BooksApi) = BookRepository(api)
 
 }

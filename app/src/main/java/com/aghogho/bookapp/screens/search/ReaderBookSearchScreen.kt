@@ -25,6 +25,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.components.InputField
@@ -32,9 +34,13 @@ import com.aghogho.bookapp.components.ReaderAppBar
 import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
-fun BookSearchScreen(navController: NavController) {
+fun BookSearchScreen(
+    navController: NavController,
+    viewModel: BookSearchViewModel = hiltViewModel(),
+    //viewModel: BookSearchViewModel = hiltViewModel(),
+) {
     Scaffold(
         topBar = {
             ReaderAppBar(
@@ -53,9 +59,11 @@ fun BookSearchScreen(navController: NavController) {
                 SearchForm(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Log.d("TAG", "BookSearchScreen: $it")
+                        .padding(16.dp),
+                    viewModel = viewModel
+                ) { searchQuery ->
+                    viewModel.searchBooks(query = searchQuery)
+                    //Log.d("TAG", "BookSearchScreen: $it")
                 }
                 Spacer(modifier = Modifier.height(13.dp))
                 BookList(navController)
@@ -129,6 +137,7 @@ fun BookRow(book: MBook, navController: NavController) {
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
+    viewModel: BookSearchViewModel,
     loading: Boolean = false,
     hint: String = "Search",
     onSearch: (String) -> Unit = {}
