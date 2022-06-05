@@ -1,32 +1,40 @@
 package com.aghogho.bookapp.screens.search
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.components.InputField
 import com.aghogho.bookapp.components.ReaderAppBar
+import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
-fun BookSearchScreen(navController: NavController = NavController(LocalContext.current)) {
+fun BookSearchScreen(navController: NavController) {
     Scaffold(
         topBar = {
             ReaderAppBar(
@@ -46,9 +54,74 @@ fun BookSearchScreen(navController: NavController = NavController(LocalContext.c
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                )
+                ) {
+                    Log.d("TAG", "BookSearchScreen: $it")
+                }
+                Spacer(modifier = Modifier.height(13.dp))
+                BookList(navController)
             }
         }
+    }
+}
+
+@Composable
+fun BookList(navController: NavController) {
+
+    val listOfBooks = listOf(
+        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
+        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
+        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
+        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
+        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
+    )
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(items = listOfBooks) { book ->
+            BookRow(book, navController)
+        }
+    }
+}
+
+@Composable
+fun BookRow(book: MBook, navController: NavController) {
+    Card(
+        modifier = Modifier
+            .clickable { }
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(3.dp),
+        shape = RectangleShape,
+        elevation = 6.dp
+    ) {
+       Row(
+           modifier = Modifier.padding(5.dp),
+           verticalAlignment = Alignment.Top
+       ) {
+            val imageUrl = "https://books.google.com/books/content?id=Wu5qDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+           Image(
+               painter = rememberImagePainter(data = imageUrl),
+               contentDescription = "Book Image",
+               modifier = Modifier
+                   .width(80.dp)
+                   .fillMaxHeight()
+                   .padding(end = 4.dp)
+           )
+           Column() {
+               Text(
+                   text = book.title.toString(),
+                   overflow = TextOverflow.Ellipsis
+               )
+               Text(
+                   text = book.authors.toString(),
+                   overflow = TextOverflow.Clip,
+                   style = MaterialTheme.typography.caption
+               )
+               //Todo: Add More Fields Later.
+           }
+       }
     }
 }
 
