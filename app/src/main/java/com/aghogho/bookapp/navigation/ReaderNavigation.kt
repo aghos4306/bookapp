@@ -1,6 +1,7 @@
 package com.aghogho.bookapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +14,7 @@ import com.aghogho.bookapp.screens.stats.StatsScreen
 import com.aghogho.bookapp.screens.update.BookUpdateScreen
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ReaderNavigation() {
     val navController = rememberNavController()
