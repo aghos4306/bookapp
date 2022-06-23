@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,14 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.components.InputField
@@ -39,7 +34,7 @@ import com.aghogho.bookapp.navigation.ReaderScreens
 fun BookSearchScreen(
     navController: NavController,
     viewModel: BookSearchViewModel = hiltViewModel(),
-    //viewModel: BookSearchViewModel = hiltViewModel(),
+    //viewModel: BookSearchViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     Scaffold(
         topBar = {
@@ -61,19 +56,26 @@ fun BookSearchScreen(
                         .fillMaxWidth()
                         .padding(16.dp),
                     viewModel = viewModel
-                ) { searchQuery ->
-                    viewModel.searchBooks(query = searchQuery)
+                ) { query ->
+                    viewModel.searchBooks(query)
                     //Log.d("TAG", "BookSearchScreen: $it")
                 }
                 Spacer(modifier = Modifier.height(13.dp))
-                BookList(navController)
+                BookList(navController, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun BookList(navController: NavController) {
+fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
+
+    if(viewModel.listOfBooks.value.loading == true) {
+        Log.d("BOO", "BookList: loading...")
+        CircularProgressIndicator()
+    } else {
+        Log.d("BOO", "BookList: ${viewModel.listOfBooks.value.data}")
+    }
 
     val listOfBooks = listOf(
         MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),

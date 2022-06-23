@@ -2,6 +2,7 @@ package com.aghogho.bookapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +11,7 @@ import com.aghogho.bookapp.screens.details.BookDetailsScreen
 import com.aghogho.bookapp.screens.home.HomeScreen
 import com.aghogho.bookapp.screens.login.LoginScreen
 import com.aghogho.bookapp.screens.search.BookSearchScreen
+import com.aghogho.bookapp.screens.search.BookSearchViewModel
 import com.aghogho.bookapp.screens.stats.StatsScreen
 import com.aghogho.bookapp.screens.update.BookUpdateScreen
 
@@ -35,7 +37,8 @@ fun ReaderNavigation() {
         }
 
         composable(ReaderScreens.SearchScreen.name) {
-            BookSearchScreen(navController = navController)
+            val viewModel = hiltViewModel<BookSearchViewModel>()
+            BookSearchScreen(navController = navController, viewModel)
         }
 
         composable(ReaderScreens.ReaderStatsScreen.name) {
