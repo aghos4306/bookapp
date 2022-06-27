@@ -1,6 +1,5 @@
 package com.aghogho.bookapp.screens.search
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.components.InputField
 import com.aghogho.bookapp.components.ReaderAppBar
-import com.aghogho.bookapp.model.MBook
+import com.aghogho.bookapp.model.Item
 import com.aghogho.bookapp.navigation.ReaderScreens
 
 @ExperimentalComposeUiApi
@@ -56,8 +55,8 @@ fun BookSearchScreen(
                         .fillMaxWidth()
                         .padding(16.dp),
                     viewModel = viewModel
-                ) { query ->
-                    viewModel.searchBooks(query)
+                ) { searchQuery ->
+                    viewModel.searchBooks(query = searchQuery)
                     //Log.d("TAG", "BookSearchScreen: $it")
                 }
                 Spacer(modifier = Modifier.height(13.dp))
@@ -68,22 +67,24 @@ fun BookSearchScreen(
 }
 
 @Composable
-fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
+fun BookList(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
 
-    if(viewModel.listOfBooks.value.loading == true) {
-        Log.d("BOO", "BookList: loading...")
-        CircularProgressIndicator()
-    } else {
-        Log.d("BOO", "BookList: ${viewModel.listOfBooks.value.data}")
-    }
+    val listOfBooks = viewModel.list
 
-    val listOfBooks = listOf(
-        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
-        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
-        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
-        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
-        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
-    )
+//    if(viewModel.listOfBooks.value.loading == true) {
+//        Log.d("BOO", "BookList: loading...")
+//        CircularProgressIndicator()
+//    } else {
+//        Log.d("BOO", "BookList: ${viewModel.listOfBooks.value.data}")
+//    }
+
+//    val listOfBooks = listOf(
+//        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
+//        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
+//        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
+//        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
+//        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
+//    )
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +97,7 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
 }
 
 @Composable
-fun BookRow(book: MBook, navController: NavController) {
+fun BookRow(book: Item, navController: NavController) {
     Card(
         modifier = Modifier
             .clickable { }
@@ -121,11 +122,11 @@ fun BookRow(book: MBook, navController: NavController) {
            )
            Column() {
                Text(
-                   text = book.title.toString(),
+                   text = book.volumeInfo.title,
                    overflow = TextOverflow.Ellipsis
                )
                Text(
-                   text = book.authors.toString(),
+                   text = "Author: ${book.volumeInfo.authors}",
                    overflow = TextOverflow.Clip,
                    style = MaterialTheme.typography.caption
                )

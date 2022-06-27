@@ -34,7 +34,7 @@ class BookSearchViewModel @Inject constructor(
         loadBooks()
     }
 
-    fun loadBooks() {
+    private fun loadBooks() {
         searchBooks("android")
     }
 
