@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -82,23 +83,6 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
             }
         }
     }
-
-//    if(viewModel.listOfBooks.value.loading == true) {
-//        Log.d("BOO", "BookList: loading...")
-//        CircularProgressIndicator()
-//    } else {
-//        Log.d("BOO", "BookList: ${viewModel.listOfBooks.value.data}")
-//    }
-
-//    val listOfBooks = listOf(
-//        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
-//        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
-//        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
-//        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
-//        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
-//    )
-
-
 }
 
 @Composable
@@ -137,9 +121,23 @@ fun BookRow(book: Item, navController: NavController) {
                Text(
                    text = "Author: ${book.volumeInfo.authors}",
                    overflow = TextOverflow.Clip,
+                   fontStyle = FontStyle.Italic,
                    style = MaterialTheme.typography.caption
                )
-               //Todo: Add More Fields Later.
+
+               Text(
+                   text = "Date: ${book.volumeInfo.publishedDate}",
+                   overflow = TextOverflow.Clip,
+                   fontStyle = FontStyle.Italic,
+                   style = MaterialTheme.typography.caption
+               )
+
+               Text(
+                   text = "${book.volumeInfo.categories}",
+                   overflow = TextOverflow.Clip,
+                   fontStyle = FontStyle.Italic,
+                   style = MaterialTheme.typography.caption
+               )
            }
        }
     }
