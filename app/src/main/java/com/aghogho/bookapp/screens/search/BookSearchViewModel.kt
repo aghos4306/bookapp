@@ -2,9 +2,12 @@ package com.aghogho.bookapp.screens.search
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aghogho.bookapp.data.Resource
 import com.aghogho.bookapp.model.Item
 import com.aghogho.bookapp.repository.BookRepository
 import com.aghogho.bookapp.utils.DataOrException
@@ -18,24 +21,47 @@ class BookSearchViewModel @Inject constructor(
     private val repository: BookRepository
     ): ViewModel() {
 
-    val listOfBooks: MutableState<DataOrException<List<Item>, Boolean, Exception>>
-      = mutableStateOf(DataOrException(null, true, Exception("")))
+//    val listOfBooks: MutableState<DataOrException<List<Item>, Boolean, Exception>>
+//      = mutableStateOf(DataOrException(null, true, Exception("")))
+//
+//    init {
+//        searchBooks("java")
+//    }
+
+    var list: List<Item> by mutableStateOf(listOf())
 
     init {
-        searchBooks("java")
+        loadBooks()
+    }
+
+    fun loadBooks() {
+        searchBooks("android")
     }
 
     fun searchBooks(query: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             if (query.isEmpty()) {
                 return@launch
             }
-            listOfBooks.value.loading = true
-            listOfBooks.value = repository.getBooks(query)
-            Log.d("SEARCH", "searchBooks: ${listOfBooks.value.data}")
-            //if (listOfBooks.value.data?.isNotEmpty() == true) listOfBooks.value.loading = false
-            if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading = false
+            try {
+               when(val response = repository.getBooks(query)) {
+                   is Resource.Success -> {
+                       list = response.data!!
+                   }
+                   is Resource.Error -> {
+                       Log.d("Network", "searchBooks: Failed to get books")
+                   }
+                   else -> {}
+               }
+            } catch (exp: Exception) {
+                Log.d("Network", "searchBooks: ${exp.message.toString()}")
+            }
+
+//            listOfBooks.value.loading = true
+//            listOfBooks.value = repository.getBooks(query)
+//            Log.d("SEARCH", "searchBooks: ${listOfBooks.value.data}")
+//            //if (listOfBooks.value.data?.isNotEmpty() == true) listOfBooks.value.loading = false
+//            if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading = false
         }
     }
-
 }
