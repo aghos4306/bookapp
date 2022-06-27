@@ -111,7 +111,11 @@ fun BookRow(book: Item, navController: NavController) {
            modifier = Modifier.padding(5.dp),
            verticalAlignment = Alignment.Top
        ) {
-            val imageUrl = "https://books.google.com/books/content?id=Wu5qDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+            val imageUrl = if (book.volumeInfo.imageLinks.smallThumbnail.isEmpty()) {
+                "https://books.google.com/books/content?id=Wu5qDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+            } else {
+                book.volumeInfo.imageLinks.smallThumbnail
+            }
            Image(
                painter = rememberImagePainter(data = imageUrl),
                contentDescription = "Book Image",
