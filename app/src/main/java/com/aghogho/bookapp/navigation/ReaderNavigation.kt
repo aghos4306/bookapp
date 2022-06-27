@@ -3,8 +3,10 @@ package com.aghogho.bookapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.aghogho.bookapp.screens.ReaderSplashScreen
 import com.aghogho.bookapp.screens.details.BookDetailsScreen
@@ -45,9 +47,14 @@ fun ReaderNavigation() {
             StatsScreen(navController = navController)
         }
 
-
-        composable(ReaderScreens.DetailScreen.name) {
-            BookDetailsScreen(navController = navController)
+        //set route to navigate to specific book details using the bookId
+        val detailName = ReaderScreens.DetailScreen.name
+        composable("$detailName/{bookId}", arguments = listOf(navArgument("bookId"){
+            type = NavType.StringType
+        })) { backStackEntry ->
+            backStackEntry.arguments?.getString("bookId").let {
+                BookDetailsScreen(navController = navController, bookId = it.toString())
+            }
         }
 
         composable(ReaderScreens.UpdateScreen.name) {
