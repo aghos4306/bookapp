@@ -70,6 +70,18 @@ fun BookSearchScreen(
 fun BookList(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
 
     val listOfBooks = viewModel.list
+    if (viewModel.isLoading) {
+        LinearProgressIndicator()
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(items = listOfBooks) { book ->
+                BookRow(book, navController)
+            }
+        }
+    }
 
 //    if(viewModel.listOfBooks.value.loading == true) {
 //        Log.d("BOO", "BookList: loading...")
@@ -86,14 +98,7 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
 //        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
 //    )
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        items(items = listOfBooks) { book ->
-            BookRow(book, navController)
-        }
-    }
+
 }
 
 @Composable
