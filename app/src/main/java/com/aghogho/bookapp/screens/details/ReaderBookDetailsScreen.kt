@@ -23,9 +23,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.components.ReaderAppBar
+import com.aghogho.bookapp.components.RounderButtonOnCardRightBottom
 import com.aghogho.bookapp.data.Resource
 import com.aghogho.bookapp.model.Item
 import com.aghogho.bookapp.navigation.ReaderScreens
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun BookDetailsScreen(
@@ -140,6 +142,22 @@ fun ShowBookDetails(
             item {
                 Text(text = cleanDescription)
             }
+        }
+    }
+
+    //Save and Cancel Buttons, use reusable composable RounderButtonOnCardRightBottom
+    Row(
+        modifier = Modifier
+            .padding(top = 6.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        RounderButtonOnCardRightBottom(label = "Save") {
+            // Save book to Firestore database
+            val db = FirebaseFirestore.getInstance()
+        }
+        Spacer(modifier = Modifier.width(25.dp))
+        RounderButtonOnCardRightBottom(label = "Cancel") {
+            navController.popBackStack()
         }
     }
 
