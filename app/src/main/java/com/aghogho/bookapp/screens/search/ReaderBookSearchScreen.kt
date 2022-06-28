@@ -72,7 +72,10 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
 
     val listOfBooks = viewModel.list
     if (viewModel.isLoading) {
-        LinearProgressIndicator()
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            LinearProgressIndicator()
+            Text(text = "Loading data...")
+        }
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
