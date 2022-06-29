@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.aghogho.bookapp.screens.ReaderSplashScreen
 import com.aghogho.bookapp.screens.details.BookDetailsScreen
 import com.aghogho.bookapp.screens.home.HomeScreen
+import com.aghogho.bookapp.screens.home.HomeScreenViewModel
 import com.aghogho.bookapp.screens.login.LoginScreen
 import com.aghogho.bookapp.screens.search.BookSearchScreen
 import com.aghogho.bookapp.screens.search.BookSearchViewModel
@@ -31,7 +32,8 @@ fun ReaderNavigation() {
         }
 
         composable(ReaderScreens.ReaderHomeScreen.name) {
-            HomeScreen(navController = navController)
+            val homeViewModel = hiltViewModel<HomeScreenViewModel>()
+            HomeScreen(navController = navController, viewModel = homeViewModel)
         }
 
         composable(ReaderScreens.LoginScreen.name) {

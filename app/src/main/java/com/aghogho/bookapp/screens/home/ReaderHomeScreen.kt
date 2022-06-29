@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.aghogho.bookapp.R
@@ -36,9 +37,11 @@ import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
 import com.google.firebase.auth.FirebaseAuth
 
-@Preview
 @Composable
-fun HomeScreen(navController: NavController = NavController(LocalContext.current)) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
     Scaffold(
         topBar = {
                  ReaderAppBar(
@@ -54,7 +57,7 @@ fun HomeScreen(navController: NavController = NavController(LocalContext.current
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             //Home Content
-            HomeContent(navController)
+            HomeContent(navController, viewModel)
         }
     }
 }
@@ -69,15 +72,26 @@ fun ReadingRightNowArea(
 
 @Composable
 fun HomeContent(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeScreenViewModel
 ) {
-    val listOfBooks = listOf(
-        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
-        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
-        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
-        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
-        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
-    )
+    var listOfBooks = emptyList<MBook>()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
+    if (!viewModel.data.value.data.isNullOrEmpty()) {
+        listOfBooks = viewModel.data.value.data!!.toList().filter { mBook ->
+            mBook.userId == currentUser?.uid.toString()
+        }
+        Log.d("Books", "HomeContent: $listOfBooks")
+    }
+
+//    val listOfBooks = listOf(
+//        MBook("abc", "Once Upon", "James Brown", "Once Upon a time in Helsinki"),
+//        MBook("abd", "Surprise Me", "James Kenth", "Once Upon a time in Manchester"),
+//        MBook("abe", "First Strong Step", "Reva Klint", "Once Upon a time in London"),
+//        MBook("abf", "Android Dummy", "Austin Duff", "Learn Android Faster"),
+//        MBook("abg", "Jetpack Compose", "Tim Cooke", "Programmatically build your UI"),
+//    )
     val email = FirebaseAuth.getInstance().currentUser?.email
     val currentUserName = if (!email.isNullOrEmpty()) {
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0)
