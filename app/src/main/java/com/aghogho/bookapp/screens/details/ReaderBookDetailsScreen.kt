@@ -1,5 +1,6 @@
 package com.aghogho.bookapp.screens.details
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -26,7 +27,9 @@ import com.aghogho.bookapp.components.ReaderAppBar
 import com.aghogho.bookapp.components.RounderButtonOnCardRightBottom
 import com.aghogho.bookapp.data.Resource
 import com.aghogho.bookapp.model.Item
+import com.aghogho.bookapp.model.MBook
 import com.aghogho.bookapp.navigation.ReaderScreens
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
@@ -153,7 +156,20 @@ fun ShowBookDetails(
     ) {
         RounderButtonOnCardRightBottom(label = "Save") {
             // Save book to Firestore database
-            val db = FirebaseFirestore.getInstance()
+            val book = MBook(
+                title = bookData.title,
+                authors = bookData.authors.toString(),
+                description = bookData.description,
+                categories = bookData.categories.toString(),
+                notes = "",
+                photoUrl = bookData.imageLinks.thumbnail,
+                publishedDate = bookData.publishedDate,
+                pageCount = bookData.pageCount.toString(),
+                rating = 0.0,
+                googleBookId = googleBookId,
+                userId = FirebaseAuth.getInstance().currentUser?.uid.toString() //id of current logged in user
+            )
+            saveToFirebase(book, navController = navController)
         }
         Spacer(modifier = Modifier.width(25.dp))
         RounderButtonOnCardRightBottom(label = "Cancel") {
@@ -161,4 +177,31 @@ fun ShowBookDetails(
         }
     }
 
+}
+
+fun saveToFirebase(
+    book: MBook,
+    navController: NavController
+) {
+    val db = FirebaseFirestore.getInstance()
+    val dbCollection = db.collection("books")
+
+    if (book.toString().isNotEmpty()) {
+        dbCollection.add(book)
+            .addOnSuccessListener { documentRef ->
+                val docId = documentRef.id
+                dbCollection.document(docId)
+                    .update(hashMapOf("id" to docId) as Map<String, Any>)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            navController.popBackStack()
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.w("Error", "SaveToFirebase: Error updating doc", it)
+                    }
+            }
+    } else {
+
+    }
 }
