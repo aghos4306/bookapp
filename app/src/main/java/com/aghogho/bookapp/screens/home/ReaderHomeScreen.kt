@@ -62,12 +62,25 @@ fun HomeScreen(
     }
 }
 
+//@Composable
+//fun ReadingRightNowArea(
+//    books: List<MBook>,
+//    navController: NavController
+//) {
+//    ListBookCard(books)
+//}
+
 @Composable
 fun ReadingRightNowArea(
-    books: List<MBook>,
+    listOfBooks: List<MBook>,
     navController: NavController
 ) {
-    ListBookCard()
+    val readingRightNowList = listOfBooks.filter { mBook ->
+        mBook.startedReading != null && mBook.finishedReading == null
+    }
+    HorizontalScrollableComponent(readingRightNowList) {
+        Log.d("TAG", "ReadingRightNowArea: $it")
+    }
 }
 
 @Composable
@@ -133,7 +146,9 @@ fun HomeContent(
         }
         //ListBookCard()
         ReadingRightNowArea(
-            books = listOf(),
+            //books = listOf(),
+            //listOfBooks = listOf(),
+            listOfBooks = listOfBooks,
             navController = navController
         )
         TitleSection(label = "Reading List")
@@ -146,10 +161,13 @@ fun HomeContent(
 }
 
 @Composable
-fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
+fun BookListArea(
+    listOfBooks: List<MBook>,
+    navController: NavController)
+{
     HorizontalScrollableComponent(listOfBooks) {
-        Log.d("TAG", "BookListArea: $it")
-        //Todo: Navigate to Book Details when Card is clicked.
+        //Log.d("TAG", "BookListArea: $it")
+        navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
     }
 }
 

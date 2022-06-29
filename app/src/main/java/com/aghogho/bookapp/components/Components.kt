@@ -270,10 +270,9 @@ fun BookRating(score: Double = 4.5) {
     }
 }
 
-@Preview
 @Composable
 fun ListBookCard(
-    book: MBook = MBook("ytk", "Designated Match", "Cloe Phoebe", "interest"),
+    book: MBook,
     onPressDetails: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -302,7 +301,8 @@ fun ListBookCard(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = rememberImagePainter(data = "http://books.google.com/books/content?id=5BGBswAQSiEC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"),
+                    //painter = rememberImagePainter(data = "http://books.google.com/books/content?id=5BGBswAQSiEC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"),
+                    painter = rememberImagePainter(data = book.photoUrl.toString()),
                     contentDescription = "Book Photo",
                     modifier = Modifier
                         .height(140.dp)
