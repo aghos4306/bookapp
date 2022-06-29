@@ -2,8 +2,10 @@ package com.aghogho.bookapp.di
 
 import com.aghogho.bookapp.network.BooksApi
 import com.aghogho.bookapp.repository.BookRepository
+import com.aghogho.bookapp.repository.FireRepository
 import com.aghogho.bookapp.utils.Constants.BASE_URL
 import com.aghogho.bookapp.utils.Constants.LOGIN_INTERCEPTOR
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
@@ -18,6 +20,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideFireBookRepository() =
+        FireRepository(queryBook = FirebaseFirestore.getInstance().collection("books"))
 
     @Singleton
     @Provides

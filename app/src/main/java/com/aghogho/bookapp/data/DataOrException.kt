@@ -1,4 +1,4 @@
-package com.aghogho.bookapp.utils
+package com.aghogho.bookapp.data
 
 data class DataOrException<T, Boolean, E: Exception>(
     var data: T? = null,
